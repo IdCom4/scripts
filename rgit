@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ "$1" != "-u" -a "$1" != "-b" -a "$1" != "-h" -a "$1" != "" ]; then
+	git add *
+	git commit -m "$1"
+fi
+
+if [ "$2" == "-u" -a "$3" != "" -a "$4" != "" -a "$5" != "" ]; then
+	git push https://$3:$4@github.com/$3/$5.git
+elif [ "$2" == "-b" -a "$3" != "" ]; then
+	git push -u origin $3
+elif [ "$1" == "-h" ]; then
+	echo "Description:"
+	echo "rgit is a faster way to use very basics git fonctionnalities"
+	echo ""
+	echo "Options:"
+	echo "-u	Push into a repository as a specific user, require <account_pseudo> <account_password> <repository_name>"
+	echo "-b	Push into a repository branch, require <branch_name>"
+	echo "-h	Display the Help menu"
+	echo ""
+	echo "Exemple:"
+	echo "rgit \"add parsing\" -u myPseudo xxxpsswdxxx myRepo"
+	echo ""
+	echo "this will commit all the modifications as \"add parsing\" and push it to the myRepo repository as myPseudo, using xxxpsswdxxx as password" 
+else
+	echo "Usage: rgit <commit_name> [-b | -u] <branch_name> | <account_pseudo> <account_password> <repository_name>"
+	echo "Type: rgit -h to display the Help menu"
+fi

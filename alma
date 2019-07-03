@@ -1,0 +1,59 @@
+#!/bin/bash
+
+N="0"
+D="###@@@_ALMA_@@@###"
+RCFILE=".`echo $SHELL | rev | cut -d '/' -f1 | rev`rc"
+SETUP=`cat ~/$RCFILE | grep "$D"`
+
+if [ "$SETUP" == "" ]; then
+    printf "\n$D\n$D\n" >> ~/$RCFILE
+fi
+
+if [ "$1" == "-a" -a "$2" != "" -a "$3" != "" ]; then
+    while IFS= read -r LINE; do
+        echo "$LINE" >> ~/.almarc
+        if [ "$LINE" == "$D" ]; then
+            N=`expr $N + 1`
+        fi
+        if [ "$LINE" == "$D" -a "$N" -eq 1 ]; then
+            echo "alias $2=\"$3\"" >> ~/.almarc
+        fi
+    done < <(cat ~/$RCFILE)
+    mv ~/.almarc ~/$RCFILE
+    exec $SHELL
+elif [ "$1" == "-l" ]; then
+    echo "     ALIAS     |     COMMAND     "
+    echo "---------------|-----------------"
+    while IFS= read -r LINE; do
+        if [ "$LINE" != "$D" -a "$N" -eq 1 ]; then
+            printf "%-15s| " `echo "$LINE" | cut -d "=" -f1 | cut -d " " -f2`
+            CMD=`echo "$LINE" | cut -d "=" -f2 | cut -c 2- | rev | cut -c 2- | rev`
+            echo "$CMD"
+        fi
+        if [ "$LINE" == "$D" ]; then
+            N=`expr $N + 1`
+        fi
+    done < <(cat ~/$RCFILE)
+    echo "---------------|-----------------"
+elif [ "$1" == "-d" -a "$2" != "" ]; then
+    while IFS= read -r LINE; do
+        ALIAS=`echo "$LINE" | grep "$2"`
+        if [[ ("$ALIAS" == "" && "$N" -eq 1) || ("$N" -eq 0 || "$N" -eq 2) ]]; then
+            echo "$LINE" >> ~/.almarc
+        fi
+        if [ "$LINE" == "$D" ]; then
+            N=`expr $N + 1`
+        fi
+    done < <(cat ~/$RCFILE)
+    mv ~/.almarc ~/$RCFILE
+    exec $SHELL
+elif [ "$1" == "-h" -o "$1" == "-help" -o "$1" == "--help" -o "$1" == "help" ]; then
+    printf "Description:\nalma is an alias manager\n"
+    echo "Options:"
+    echo "-a	Add a new alias, require <alias_name> <command>"
+    echo "-l	List all the current aliases"
+    echo "-d	Delete an alias, require <alias_name>"
+    echo "-h	Open the help menu"
+else
+    printf "Usage: alma [-a | -l | -d | -h] <alias_name> <command>\nType alma -h for help\n"
+fi
