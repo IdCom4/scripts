@@ -29,6 +29,7 @@ elif [ "$1" == "-h" ]; then
 	echo ""
 	echo "this will commit all the modifications as \"add parsing\" and push it to the myRepo repository as myPseudo, using xxxpsswdxxx as password" 
 elif [ "$1" != "-p" -a "$1" != "-c"	]; then
-	echo "Usage: rgit -p | -c <commit_name> [-c | -b | -u] <branch_name> | <account_pseudo> <account_password> <repository_name>"
+	echo "Usage:	rgit -p"
+	echo "			rgit -c <commit_name> [-p | -b | -u] <branch_name> | <account_pseudo> <account_password> <repository_name>"
 	echo "Type: rgit -h to display the Help menu"
 fi
