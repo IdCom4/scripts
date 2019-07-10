@@ -1,0 +1,75 @@
+#!/bin/bash
+
+LIBFT="/Users/idcornua/work/Libft"
+RC_FOLDER="/Users/idcornua/work/scripts/np_ressources"
+GTIME="/Users/idcornua/work/scripts/gtime"
+USR=`pwd | cut -d '/' -f3`
+I="0"
+
+if [ "$1" != "" ]; then
+	if [ -d "$1" ]; then
+		echo "Error: $1 folder already exist"
+		exit
+	fi
+	mkdir $1
+	cd $1
+	mkdir libft
+	cp -rf $LIBFT/* ./libft
+	DATE=`$GTIME -d Y/M/D -h H:M:S`
+	while IFS= read -r LINE; do
+		I=`expr $I + 1`
+		if [ "$I" -eq 4 ]; then
+			printf "/*   %-51s%s\n" "main_$1.c" "$LINE" >> main_$1.c
+		elif [ "$I" -eq 6 ]; then
+			printf "/*   By: %-43s%s\n" "$USR <marvin@42.fr>" "$LINE" >> main_$1.c
+		elif [ "$I" -eq 8 ]; then
+			printf "/*   Created: %s by %-18s%s\n" "$DATE" "$USR" "$LINE" >> main_$1.c
+		elif [ "$I" -eq 9 ]; then
+			printf "/*   Updated: %s by %-17s%s\n" "$DATE" "$USR" "$LINE" >> main_$1.c
+		elif [ "$I" -eq 13 ]; then
+			printf "%s \"%s\"\n" "$LINE" "$1.h" >> main_$1.c
+		else
+			echo "$LINE" >> main_$1.c
+		fi
+	done < <(cat $RC_FOLDER/main.c)
+	I="0"
+	while IFS= read -r LINE; do
+		I=`expr $I + 1`
+		if [ "$I" -eq 4 ]; then
+			printf "/*   %-51s%s\n" "$1.h" "$LINE" >> $1.h
+		elif [ "$I" -eq 6 ]; then
+			printf "/*   By: %-43s%s\n" "$USR <marvin@42.fr>" "$LINE" >> $1.h
+		elif [ "$I" -eq 8 ]; then
+			printf "/*   Created: %s by %-18s%s\n" "$DATE" "$USR" "$LINE" >> $1.h
+		elif [ "$I" -eq 9 ]; then
+			printf "/*   Updated: %s by %-17s%s\n" "$DATE" "$USR" "$LINE" >> $1.h
+		elif [ "$I" -eq 13 ]; then
+			printf "%s %s\n" "$LINE" `echo "$1_H" | tr [a-z] [A-Z]` >> $1.h
+		elif [ "$I" -eq 14 ]; then
+			printf "%s %s\n" "$LINE" `echo "$1_H" | tr [a-z] [A-Z]` >> $1.h
+		else
+			echo "$LINE" >> $1.h
+		fi
+	done < <(cat $RC_FOLDER/header.h)
+	I="0"
+	while IFS= read -r LINE; do
+		I=`expr $I + 1`
+		if [ "$I" -eq 6 ]; then
+			printf "#    By: %-43s%s\n" "$USR <marvin@42.fr>" "$LINE" >> Makefile
+		elif [ "$I" -eq 8 ]; then
+			printf "#    Created: %s by %-18s%s\n" "$DATE" "$USR" "$LINE" >> Makefile
+		elif [ "$I" -eq 9 ]; then
+			printf "#    Updated: %s by %-17s%s\n" "$DATE" "$USR" "$LINE" >> Makefile
+		elif [ "$I" -eq 13 ]; then
+			printf "%s %s\n" "$LINE" "$1" >> Makefile
+		elif [ "$I" -eq 14 ]; then
+			printf "%s %s\n" "$LINE" "main_$1.c" >> Makefile
+		elif [ "$I" -eq 23 ]; then
+			printf "%s[%s]\n" "$LINE" `echo "$1" | tr [a-z] [A-Z]` >> Makefile
+		else
+			echo "$LINE" >> Makefile
+		fi
+	done < <(cat $RC_FOLDER/Makefile)
+	cd $1
+	exec `echo $SHELL | rev | cut -d '/' -f1 | rev`
+fi

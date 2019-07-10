@@ -7,39 +7,9 @@ COLOR='\033[1;32m'
 #Default
 DEFAULT='\033[1;37m'
 
-D=`date | cut -d ' ' -f4`
-if [ "$D" -lt 10 ]; then
-	D="0$D"
-fi
-M=`date | cut -d ' ' -f2`
-if [ "$M" == "Jan" ]; then
-	M="01"
-elif [ "$M" == "Feb" ]; then
-	M="02"
-elif [ "$M" == "Mar" ]; then
-	M="03"
-elif [ "$M" == "Apr" ]; then
-	M="04"
-elif [ "$M" == "May" ]; then
-	M="05"
-elif [ "$M" == "Jun" ]; then
-	M="06"
-elif [ "$M" == "Jul" ]; then
-	M="07"
-elif [ "$M" == "Aug" ]; then
-	M="08"
-elif [ "$M" == "Sep" ]; then
-	M="09"
-elif [ "$M" == "Oct" ]; then
-	M="10"
-elif [ "$M" == "Nov" ]; then
-	M="11"
-else
-	M="12"
-fi
-Y=`date | cut -d ' ' -f7`
-MYDATE="$COLOR$D/$M/$Y$DEFAULT"
-H="$COLOR`date | cut -d ' ' -f5 | cut -d ':' -f1`:`date | cut -d ' ' -f5 | cut -d ':' -f2`$DEFAULT"
+GTIME="/Users/idcornua/work/scripts/gtime"
+MYDATE="$COLOR`$GTIME -d D/M/Y`$DEFAULT"
+H="$COLOR`$GTIME -h H:M`$DEFAULT"
 
 echo -e "Bonjour"
 echo -e "$COLOR"

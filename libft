@@ -1,0 +1,8 @@
+#!/bin/bash
+
+LIBFT_PATH="/Users/idcornua/work/Libft"
+
+if [ ! -d "libft" ]; then
+	mkdir libft
+fi
+cp -rf $LIBFT_PATH/* ./libft
