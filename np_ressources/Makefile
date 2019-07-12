@@ -12,7 +12,8 @@
 
 NAME =
 SRCS =
-OBJECTS = $(SRCS:.c=.o)
+OBJS_DIR = objs
+OBJECTS = $(OBJS_DIR)/$(SRCS:.c=.o)
 LIBFT_PATH = ./libft
 LIBFT_A = $(LIBFT_PATH)/libft.a
 CC = gcc
@@ -27,24 +28,27 @@ all : $(NAME)
 
 $(NAME): $(LIBFT_A) $(OBJECTS)
 	@printf '$(MKFLE)${PRCS_CLR}%-65s' ">> Compiling executable..."
-	@$(CC) $(CFLAGS) -o $(NAME) objs/$(OBJECTS) $(LIBFT_A)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LIBFT_A)
 	@printf '\r$(MKFLE)${SCSS_CLR}%-65s\n' ">> $(NAME) created."
 
 $(LIBFT_A):
 	@make -C $(LIBFT_PATH)
 
-%.o: %.c
-	@if [[ ! -d "objs" ]]; then \
-		mkdir objs ; \
+$(OBJS_DIR)/%.o: %.c
+	@if [[ ! -d "$(OBJS_DIR)" ]]; then \
+		mkdir $(OBJS_DIR) ; \
 	fi
 	@printf '$(MKFLE)${PRCS_CLR}%-60s' ">> Compiling $<..."
-	@$(CC) $(CFLAGS) -o objs/$@ -c $<
+	@$(CC) $(CFLAGS) -o $@ -c $<
 	@printf "${SCSS_CLR}[OK]\r"
 
 clean:
+	@if [[ -d "$(NAME).dSYM" ]]; then \
+		rm -rf $(NAME).dSYM ; \
+	fi
 	@make clean -C $(LIBFT_PATH)
 	@printf "$(MKFLE)${PRCS_CLR}>> Deleting objects...\r"
-	@rm -rf objs
+	@rm -rf $(OBJS_DIR)
 	@echo "$(MKFLE)${SCSS_CLR}>> Objects deleted.       "
 
 fclean: clean
