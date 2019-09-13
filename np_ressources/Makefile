@@ -13,7 +13,7 @@
 NAME =
 SRCS =
 OBJS_DIR = objs
-OBJECTS = $(OBJS_DIR)/$(SRCS:.c=.o)
+OBJECTS = $(patsubst %.c,$(OBJS_DIR)/%.o, $(SRCS))
 LIBFT_PATH = ./libft
 LIBFT_A = $(LIBFT_PATH)/libft.a
 CC = gcc
